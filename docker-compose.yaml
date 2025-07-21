@@ -1,0 +1,38 @@
+version: '3.10'
+
+services:
+  db:
+    image: postgres:15
+    env_file:
+      - .env.container
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "17771:5432"
+
+  migrator:
+    build: .
+    image: app
+    volumes:
+      - .:/app
+    env_file:
+      - .env.container
+    depends_on:
+      - db
+    command: [ "python3", "src/manage.py", "migrate" ]
+
+  web:
+    image: app
+    volumes:
+      - .:/app
+    ports:
+      - "17772:8000"
+    env_file:
+      - .env.container
+    depends_on:
+      - migrator
+    restart: unless-stopped
+    command: [ "python3", "src/manage.py", "runserver", "0.0.0.0:8000" ]
+
+volumes:
+  postgres_data:

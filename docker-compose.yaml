@@ -14,17 +14,17 @@ services:
     build: .
     image: app
     volumes:
-      - .:/app
+      - .app:/app/src
     env_file:
       - .env.container
     depends_on:
       - db
-    command: [ "python3", "src/manage.py", "migrate" ]
+    command: [ "python3", "-m", "manage", "migrate" ]
 
   web:
     image: app
     volumes:
-      - .:/app
+      - .app:/app/src
     ports:
       - "17772:8000"
     env_file:
@@ -32,7 +32,7 @@ services:
     depends_on:
       - migrator
     restart: unless-stopped
-    command: [ "python3", "src/manage.py", "runserver", "0.0.0.0:8000" ]
+    command: [ "python3", "-m", "manage", "runserver", "0.0.0.0:8000" ]
 
 volumes:
   postgres_data:

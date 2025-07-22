@@ -26,3 +26,9 @@ python manage.py migrate
 python manage.py runserver
 ```
 
+## Либо через Docker
+
+```bash
+docker compose up -d --build
+```
+

@@ -5,14 +5,10 @@ WORKDIR /app
 COPY pyproject.toml uv.lock /app/
 COPY src /app/
 
-#ENV PATH="/app/.venv/bin:$PATH"
-
 RUN uv sync --no-dev --frozen --no-install-project
 
-RUN uv pip freeze > requirements.txt
+ENV PATH="/app/.venv/bin:$PATH"
 
-RUN pip3 install -r requirements.txt
+CMD ["uv", "run", "manage.py", "migrate"]
 
-CMD ["python3", "-m", "manage", "migrate"]
-
-CMD ["python3", "-m", "manage", "runserver", "0.0.0.0:8000"]
+CMD ["uv", "run", "manage.py", "runserver", "0.0.0.0:8000"]
